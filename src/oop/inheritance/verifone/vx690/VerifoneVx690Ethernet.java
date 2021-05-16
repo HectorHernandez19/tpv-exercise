@@ -1,6 +1,24 @@
 package oop.inheritance.verifone.vx690;
 
-public class VerifoneVx690Ethernet {
+import oop.inheritance.core.TPVEthernet;
+import oop.inheritance.data.Transaction;
+import oop.inheritance.data.TransactionResponse;
+
+public class VerifoneVx690Ethernet implements TPVEthernet {
+    private static VerifoneVx690Ethernet uniqueInstance;
+
+    private VerifoneVx690Ethernet(){}
+
+    public static VerifoneVx690Ethernet getInstance(){
+        if(uniqueInstance == null){
+            synchronized (VerifoneVx690Ethernet.class){
+                if(uniqueInstance == null){
+                    uniqueInstance = new VerifoneVx690Ethernet();
+                }
+            }
+        }
+        return uniqueInstance;
+    }
 
     /**
      * Opens a connection using the ethernet device
@@ -18,7 +36,7 @@ public class VerifoneVx690Ethernet {
      * @param message message to be sent to the server
      * @return true if the message was sent successfully, false otherwise
      */
-    public boolean send(byte[] message) {
+    public boolean send(Transaction message) {
         return true;
     }
 
@@ -27,8 +45,8 @@ public class VerifoneVx690Ethernet {
      *
      * @return Message received from the host. In case of timeout it returns null
      */
-    public byte[] receive() {
-        return "response".getBytes();
+    public TransactionResponse receive() {
+        return new TransactionResponse(true, "132123");
     }
 
     /**

@@ -1,7 +1,25 @@
 package oop.inheritance.verifone.v240m;
 
-public class VerifoneV240mDisplay {
+import oop.inheritance.core.TPVDisplay;
 
+public class VerifoneV240mDisplay implements TPVDisplay {
+    private boolean lightTurnedOn;
+    //Lazy initialization
+    private static VerifoneV240mDisplay uniqueInstance;
+
+    //Con esto hacemos que mo se puedan crear instancias desde cualquier lado
+    private VerifoneV240mDisplay(){
+    }
+
+    public static VerifoneV240mDisplay getInstance(){
+        if(uniqueInstance == null){
+            synchronized (VerifoneV240mDisplay.class){
+                if(uniqueInstance == null)
+                    uniqueInstance = new VerifoneV240mDisplay();
+            }
+        }
+        return uniqueInstance;
+    }
     /**
      * Prints a message to specied position
      *
@@ -10,6 +28,11 @@ public class VerifoneV240mDisplay {
      * @param message message to be printed
      */
     public void showMessage(int x, int y, String message) {
+    }
+
+    @Override
+    public void toogleLight(){
+        lightTurnedOn = !lightTurnedOn;
     }
 
     /**

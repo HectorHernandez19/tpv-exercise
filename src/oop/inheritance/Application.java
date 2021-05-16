@@ -2,6 +2,7 @@ package oop.inheritance;
 
 import java.time.LocalDateTime;
 
+import oop.inheritance.core.*;
 import oop.inheritance.data.Card;
 import oop.inheritance.data.CommunicationType;
 import oop.inheritance.data.SupportedTerminal;
@@ -21,43 +22,34 @@ public class Application {
 
     private CommunicationType communicationType = CommunicationType.ETHERNET;
     private SupportedTerminal supportedTerminal;
+    private TPVFactory tpvFactory;
 
     public Application(SupportedTerminal supportedTerminal) {
         this.supportedTerminal = supportedTerminal;
     }
 
     public void showMenu() {
-        if (supportedTerminal == SupportedTerminal.INGENICO) {
-            IngenicoDisplay ingenicoDisplay = new IngenicoDisplay();
+        TPVDisplay tpvDisplay = tpvFactory.getDisplayInstance();
 
-            ingenicoDisplay.showMessage(5, 5, "MENU");
-            ingenicoDisplay.showMessage(5, 10, "1. VENTA");
-            ingenicoDisplay.showMessage(5, 13, "2. DEVOLUCION");
-            ingenicoDisplay.showMessage(5, 16, "3. REPORTE");
-            ingenicoDisplay.showMessage(5, 23, "4. CONFIGURACION");
-        } else {
-            VerifoneV240mDisplay verifoneV240mDisplay = new VerifoneV240mDisplay();
-
-            verifoneV240mDisplay.showMessage(5, 5, "MENU");
-            verifoneV240mDisplay.showMessage(5, 10, "1. VENTA");
-            verifoneV240mDisplay.showMessage(5, 13, "2. DEVOLUCION");
-            verifoneV240mDisplay.showMessage(5, 16, "3. REPORTE");
-            verifoneV240mDisplay.showMessage(5, 23, "4. CONFIGURACION");
-        }
+        tpvDisplay.showMessage(5, 5, "MENU");
+        tpvDisplay.showMessage(5, 10, "1. VENTA");
+        tpvDisplay.showMessage(5, 13, "2. DEVOLUCION");
+        tpvDisplay.showMessage(5, 16, "3. REPORTE");
+        tpvDisplay.showMessage(5, 23, "4. CONFIGURACION");
 
     }
 
     public String readKey() {
-        IngenicoKeyboard ingenicoKeyboard = new IngenicoKeyboard();
+        TPVKeyboard tpvKeyboard = tpvFactory.getKeyboardInstance();
 
-        return ingenicoKeyboard.get();
+        return tpvKeyboard.get();
     }
 
     public void doSale() {
         IngenicoCardSwipper cardSwipper = new IngenicoCardSwipper();
         IngenicoChipReader chipReader = new IngenicoChipReader();
-        IngenicoDisplay ingenicoDisplay = new IngenicoDisplay();
-        IngenicoKeyboard ingenicoKeyboard = new IngenicoKeyboard();
+        IngenicoDisplay ingenicoDisplay = IngenicoDisplay.getInstance();
+        IngenicoKeyboard ingenicoKeyboard = IngenicoKeyboard.getInstance();
         Card card;
 
         do {
@@ -103,11 +95,12 @@ public class Application {
     }
 
     private TransactionResponse sendSale(Transaction transaction) {
-        IngenicoEthernet ethernet = new IngenicoEthernet();
-        IngenicoModem modem = new IngenicoModem();
-        IngenicoGPS gps = new IngenicoGPS();
+        TPVModem modem = tpvFactory.getModemInstance();
+        TPVEthernet ethernet = tpvFactory.getEthernetInstance();
+        TPVGPS gps = tpvFactory.getGPSInstance();
         TransactionResponse transactionResponse = null;
 
+        //Esto se puede mejorar, pero lo hare en otra ocasion
         switch (communicationType) {
             case ETHERNET:
                 ethernet.open();
@@ -142,14 +135,7 @@ public class Application {
     }
 
     public void clearScreen() {
-        if (supportedTerminal == SupportedTerminal.INGENICO) {
-            IngenicoDisplay ingenicoDisplay = new IngenicoDisplay();
-
-            ingenicoDisplay.clear();
-        } else {
-            VerifoneV240mDisplay verifoneV240mDisplay = new VerifoneV240mDisplay();
-
-            verifoneV240mDisplay.clear();
-        }
+        TPVDisplay tpvDisplay = tpvFactory.getDisplayInstance();
+        tpvDisplay.clear();
     }
 }

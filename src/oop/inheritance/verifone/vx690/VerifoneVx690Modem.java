@@ -1,6 +1,24 @@
 package oop.inheritance.verifone.vx690;
 
-public class VerifoneVx690Modem {
+import oop.inheritance.core.TPVModem;
+import oop.inheritance.data.Transaction;
+import oop.inheritance.data.TransactionResponse;
+
+public class VerifoneVx690Modem implements TPVModem {
+    private static VerifoneVx690Modem uniqueInstance;
+
+    private VerifoneVx690Modem(){}
+
+    public static VerifoneVx690Modem getInstance(){
+        if(uniqueInstance == null){
+            synchronized (VerifoneVx690Modem.class){
+                if(uniqueInstance == null){
+                    uniqueInstance = new VerifoneVx690Modem();
+                }
+            }
+        }
+        return uniqueInstance;
+    }
 
     /**
      * Opens a connection using the modem device
@@ -18,7 +36,7 @@ public class VerifoneVx690Modem {
      * @param message message to be sent to the server
      * @return true if the message was sent successfully, false otherwise
      */
-    public boolean send(byte[] message) {
+    public boolean send(Transaction message) {
         return true;
     }
 
@@ -27,8 +45,8 @@ public class VerifoneVx690Modem {
      *
      * @return Message received from the host. In case of timeout it returns null
      */
-    public byte[] receive() {
-        return "response".getBytes();
+    public TransactionResponse receive() {
+        return new TransactionResponse(true, "132123");
     }
 
     /**

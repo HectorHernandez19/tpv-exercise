@@ -1,9 +1,24 @@
 package oop.inheritance.ingenico;
 
+import oop.inheritance.core.TPVModem;
 import oop.inheritance.data.Transaction;
 import oop.inheritance.data.TransactionResponse;
 
-public class IngenicoModem {
+public class IngenicoModem implements TPVModem {
+    private static IngenicoModem uniqueInstance;
+
+    private IngenicoModem(){}
+
+    public static IngenicoModem getInstance(){
+        if(uniqueInstance == null){
+            synchronized (IngenicoModem.class){
+                if(uniqueInstance == null){
+                    uniqueInstance = new IngenicoModem();
+                }
+            }
+        }
+        return uniqueInstance;
+    }
 
     /**
      * Opens a connection using the modem device
